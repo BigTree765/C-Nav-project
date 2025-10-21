@@ -121,6 +121,7 @@ function setupVideoCarouselAutoplay() {
 
 $(document).ready(function() {
     // Check for click events on the navbar burger icon
+    console.log('Document ready, initializing carousel...');
 
     var options = {
 		slidesToScroll: 1,
@@ -132,7 +133,9 @@ $(document).ready(function() {
     }
 
 	// Initialize all div with carousel class
+    console.log('Found carousel elements:', $('.carousel').length);
     var carousels = bulmaCarousel.attach('.carousel', options);
+    console.log('Carousel initialized:', carousels);
 	
     bulmaSlider.attach();
     
