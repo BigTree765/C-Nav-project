@@ -21,6 +21,10 @@
   --border-radius: 12px;
   --border-radius-lg: 16px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 自定义最大宽度设置 */
+  --max-width-desktop: 1200px;  /* 默认是1152px，可以调整 */
+  --max-width-widescreen: 1400px;  /* 默认是1344px，可以调整 */
 }
 
 /* Smooth scrolling for better UX */
@@ -36,6 +40,26 @@ body {
   background-color: var(--background-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 自定义容器宽度 */
+.container.is-max-desktop {
+  max-width: var(--max-width-desktop) !important;
+}
+
+.container.is-max-widescreen {
+  max-width: var(--max-width-widescreen) !important;
+}
+
+/* 全宽容器选项 */
+.container.is-fullwidth {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* 超宽容器选项 */
+.container.is-ultrawide {
+  max-width: 1600px !important;
 }
 
 
