@@ -119,6 +119,46 @@ function setupVideoCarouselAutoplay() {
     });
 }
 
+// Synchronized video comparison playback
+function setupVideoComparison() {
+    const baselineVideo = document.getElementById('baseline-video');
+    const cnavVideo = document.getElementById('cnav-video');
+    
+    if (!baselineVideo || !cnavVideo) return;
+    
+    // Sync play/pause
+    baselineVideo.addEventListener('play', function() {
+        cnavVideo.play();
+    });
+    
+    baselineVideo.addEventListener('pause', function() {
+        cnavVideo.pause();
+    });
+    
+    cnavVideo.addEventListener('play', function() {
+        baselineVideo.play();
+    });
+    
+    cnavVideo.addEventListener('pause', function() {
+        baselineVideo.pause();
+    });
+    
+    // Sync seeking
+    baselineVideo.addEventListener('seeked', function() {
+        if (Math.abs(cnavVideo.currentTime - baselineVideo.currentTime) > 0.1) {
+            cnavVideo.currentTime = baselineVideo.currentTime;
+        }
+    });
+    
+    cnavVideo.addEventListener('seeked', function() {
+        if (Math.abs(baselineVideo.currentTime - cnavVideo.currentTime) > 0.1) {
+            baselineVideo.currentTime = cnavVideo.currentTime;
+        }
+    });
+    
+    console.log('Video comparison sync enabled');
+}
+
 $(document).ready(function() {
     // Check for click events on the navbar burger icon
     console.log('Document ready, initializing carousel...');
@@ -141,5 +181,8 @@ $(document).ready(function() {
     
     // Setup video autoplay for carousel
     setupVideoCarouselAutoplay();
+    
+    // Setup video comparison sync
+    setupVideoComparison();
 
 })

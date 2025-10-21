@@ -367,26 +367,48 @@
 <!-- End image carousel -->
 
 
-
-<!-- Youtube video -->
+<!-- Video Comparison -->
 <section class="hero is-small is-light">
   <div class="hero-body">
     <div class="container is-ultrawide">
-      <!-- Paper video. -->
-      <h2 class="title is-3">Video Presentation</h2>
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          
-          <div class="publication-video">
-            <!-- TODO: Replace with your YouTube video ID -->
-            <iframe src="https://www.youtube.com/embed/JkaxUblCGz0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <h2 class="title is-3 has-text-centered">Performance Comparison</h2>
+      <p class="subtitle has-text-centered" style="margin-bottom: 2rem;">
+        Side-by-side comparison of Baseline model and C-Nav model navigation performance
+      </p>
+      
+      <div class="columns is-vcentered">
+        <!-- Baseline Video -->
+        <div class="column is-half">
+          <div class="video-comparison-item">
+            <h3 class="title is-4 has-text-centered">Baseline Model</h3>
+            <video poster="" id="baseline-video" controls muted loop height="100%" preload="metadata" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <source src="static/videos/baseline.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p class="has-text-centered" style="margin-top: 1rem; color: #64748b;">
+              Baseline model showing catastrophic forgetting and navigation failures
+            </p>
+          </div>
+        </div>
+        
+        <!-- C-Nav Video -->
+        <div class="column is-half">
+          <div class="video-comparison-item">
+            <h3 class="title is-4 has-text-centered" style="color: #2563eb;">C-Nav Model</h3>
+            <video poster="" id="cnav-video" controls muted loop height="100%" preload="metadata" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <source src="static/videos/c-nav.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p class="has-text-centered" style="margin-top: 1rem; color: #64748b;">
+              C-Nav model with continual learning and successful navigation
+            </p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-<!-- End youtube video -->
+<!-- End Video Comparison -->
 
 
 <!-- Video carousel -->
