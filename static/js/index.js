@@ -119,6 +119,51 @@ function setupVideoCarouselAutoplay() {
     });
 }
 
+// Lazy load videos when they come into view
+function setupVideoLazyLoading() {
+    const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const video = entry.target;
+                const loadingElement = document.getElementById(video.id + '-loading');
+                
+                if (video.dataset.src && !video.src) {
+                    // Load video source
+                    video.src = video.dataset.src;
+                    video.load();
+                    
+                    // Hide loading indicator when video is ready
+                    video.addEventListener('loadeddata', function() {
+                        if (loadingElement) {
+                            loadingElement.style.display = 'none';
+                        }
+                        video.style.display = 'block';
+                    });
+                    
+                    // Handle loading errors
+                    video.addEventListener('error', function() {
+                        if (loadingElement) {
+                            loadingElement.innerHTML = '<p style="color: #ef4444;">Failed to load video</p>';
+                        }
+                    });
+                }
+                
+                // Stop observing once loaded
+                videoObserver.unobserve(video);
+            }
+        });
+    }, {
+        threshold: 0.1 // Load when 10% visible
+    });
+    
+    // Observe both videos
+    const baselineVideo = document.getElementById('baseline-video');
+    const cnavVideo = document.getElementById('cnav-video');
+    
+    if (baselineVideo) videoObserver.observe(baselineVideo);
+    if (cnavVideo) videoObserver.observe(cnavVideo);
+}
+
 // Synchronized video comparison playback
 function setupVideoComparison() {
     const baselineVideo = document.getElementById('baseline-video');
@@ -126,37 +171,54 @@ function setupVideoComparison() {
     
     if (!baselineVideo || !cnavVideo) return;
     
-    // Sync play/pause
-    baselineVideo.addEventListener('play', function() {
-        cnavVideo.play();
+    // Wait for videos to be loaded before setting up sync
+    const setupSync = () => {
+        // Sync play/pause
+        baselineVideo.addEventListener('play', function() {
+            if (cnavVideo.readyState >= 2) cnavVideo.play();
+        });
+        
+        baselineVideo.addEventListener('pause', function() {
+            cnavVideo.pause();
+        });
+        
+        cnavVideo.addEventListener('play', function() {
+            if (baselineVideo.readyState >= 2) baselineVideo.play();
+        });
+        
+        cnavVideo.addEventListener('pause', function() {
+            baselineVideo.pause();
+        });
+        
+        // Sync seeking
+        baselineVideo.addEventListener('seeked', function() {
+            if (Math.abs(cnavVideo.currentTime - baselineVideo.currentTime) > 0.1) {
+                cnavVideo.currentTime = baselineVideo.currentTime;
+            }
+        });
+        
+        cnavVideo.addEventListener('seeked', function() {
+            if (Math.abs(baselineVideo.currentTime - cnavVideo.currentTime) > 0.1) {
+                baselineVideo.currentTime = cnavVideo.currentTime;
+            }
+        });
+        
+        console.log('Video comparison sync enabled');
+    };
+    
+    // Setup sync when both videos are ready
+    let baselineReady = false;
+    let cnavReady = false;
+    
+    baselineVideo.addEventListener('loadeddata', function() {
+        baselineReady = true;
+        if (cnavReady) setupSync();
     });
     
-    baselineVideo.addEventListener('pause', function() {
-        cnavVideo.pause();
+    cnavVideo.addEventListener('loadeddata', function() {
+        cnavReady = true;
+        if (baselineReady) setupSync();
     });
-    
-    cnavVideo.addEventListener('play', function() {
-        baselineVideo.play();
-    });
-    
-    cnavVideo.addEventListener('pause', function() {
-        baselineVideo.pause();
-    });
-    
-    // Sync seeking
-    baselineVideo.addEventListener('seeked', function() {
-        if (Math.abs(cnavVideo.currentTime - baselineVideo.currentTime) > 0.1) {
-            cnavVideo.currentTime = baselineVideo.currentTime;
-        }
-    });
-    
-    cnavVideo.addEventListener('seeked', function() {
-        if (Math.abs(baselineVideo.currentTime - cnavVideo.currentTime) > 0.1) {
-            baselineVideo.currentTime = cnavVideo.currentTime;
-        }
-    });
-    
-    console.log('Video comparison sync enabled');
 }
 
 $(document).ready(function() {
@@ -181,6 +243,9 @@ $(document).ready(function() {
     
     // Setup video autoplay for carousel
     setupVideoCarouselAutoplay();
+    
+    // Setup lazy loading for comparison videos
+    setupVideoLazyLoading();
     
     // Setup video comparison sync
     setupVideoComparison();
