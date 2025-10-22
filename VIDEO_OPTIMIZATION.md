@@ -24,7 +24,7 @@
 ffmpeg -i input.mp4 -c:v libx264 -crf 28 -c:a aac -b:a 128k output.mp4
 
 # 更激进的压缩（文件更小）
-ffmpeg -i input.mp4 -c:v libx264 -crf 32 -c:a aac -b:a 96k output.mp4
+ffmpeg -i static/videos/cnav_toilet_hm3d_4o12.mp4 -c:v libx264 -crf 32 -c:a aac -b:a 96k output.mp4
 ```
 
 ### 2. **视频格式优化**
