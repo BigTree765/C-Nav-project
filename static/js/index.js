@@ -119,8 +119,24 @@ function setupVideoCarouselAutoplay() {
     });
 }
 
+// Check network connection quality
+function getNetworkQuality() {
+    if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+            return 'slow';
+        } else if (connection.effectiveType === '3g') {
+            return 'medium';
+        }
+    }
+    return 'fast';
+}
+
 // Lazy load videos when they come into view
 function setupVideoLazyLoading() {
+    const networkQuality = getNetworkQuality();
+    const isSlowConnection = networkQuality === 'slow';
+    
     const videoObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -128,6 +144,11 @@ function setupVideoLazyLoading() {
                 const loadingElement = document.getElementById(video.id + '-loading');
                 
                 if (video.dataset.src && !video.src) {
+                    // Show network-specific loading message
+                    if (isSlowConnection && loadingElement) {
+                        loadingElement.innerHTML = '<div class="loading-spinner"></div><p>Loading video (slow connection detected)...</p>';
+                    }
+                    
                     // Load video source
                     video.src = video.dataset.src;
                     video.load();
@@ -143,9 +164,18 @@ function setupVideoLazyLoading() {
                     // Handle loading errors
                     video.addEventListener('error', function() {
                         if (loadingElement) {
-                            loadingElement.innerHTML = '<p style="color: #ef4444;">Failed to load video</p>';
+                            loadingElement.innerHTML = '<p style="color: #ef4444;">Failed to load video. Please check your connection.</p>';
                         }
                     });
+                    
+                    // Add timeout for slow connections
+                    if (isSlowConnection) {
+                        setTimeout(() => {
+                            if (video.readyState < 2 && loadingElement) {
+                                loadingElement.innerHTML = '<p style="color: #f59e0b;">Loading is taking longer than expected...</p>';
+                            }
+                        }, 5000);
+                    }
                 }
                 
                 // Stop observing once loaded
@@ -153,7 +183,8 @@ function setupVideoLazyLoading() {
             }
         });
     }, {
-        threshold: 0.1 // Load when 10% visible
+        threshold: 0.3, // Load when 30% visible (more conservative)
+        rootMargin: '50px' // Start loading 50px before entering viewport
     });
     
     // Observe both videos
@@ -224,6 +255,16 @@ function setupVideoComparison() {
 $(document).ready(function() {
     // Check for click events on the navbar burger icon
     console.log('Document ready, initializing carousel...');
+    
+    // Log network information for debugging
+    if ('connection' in navigator) {
+        const connection = navigator.connection;
+        console.log('Network info:', {
+            effectiveType: connection.effectiveType,
+            downlink: connection.downlink,
+            rtt: connection.rtt
+        });
+    }
 
     var options = {
 		slidesToScroll: 1,
