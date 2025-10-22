@@ -119,138 +119,46 @@ function setupVideoCarouselAutoplay() {
     });
 }
 
-// Check network connection quality
-function getNetworkQuality() {
-    if ('connection' in navigator) {
-        const connection = navigator.connection;
-        if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
-            return 'slow';
-        } else if (connection.effectiveType === '3g') {
-            return 'medium';
-        }
-    }
-    return 'fast';
-}
-
-// Lazy load videos when they come into view
-function setupVideoLazyLoading() {
-    const networkQuality = getNetworkQuality();
-    const isSlowConnection = networkQuality === 'slow';
-    
-    const videoObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const video = entry.target;
-                const loadingElement = document.getElementById(video.id + '-loading');
-                
-                if (video.dataset.src && !video.src) {
-                    // Show network-specific loading message
-                    if (isSlowConnection && loadingElement) {
-                        loadingElement.innerHTML = '<div class="loading-spinner"></div><p>Loading video (slow connection detected)...</p>';
-                    }
-                    
-                    // Load video source
-                    video.src = video.dataset.src;
-                    video.load();
-                    
-                    // Hide loading indicator when video is ready
-                    video.addEventListener('loadeddata', function() {
-                        if (loadingElement) {
-                            loadingElement.style.display = 'none';
-                        }
-                        video.style.display = 'block';
-                    });
-                    
-                    // Handle loading errors
-                    video.addEventListener('error', function() {
-                        if (loadingElement) {
-                            loadingElement.innerHTML = '<p style="color: #ef4444;">Failed to load video. Please check your connection.</p>';
-                        }
-                    });
-                    
-                    // Add timeout for slow connections
-                    if (isSlowConnection) {
-                        setTimeout(() => {
-                            if (video.readyState < 2 && loadingElement) {
-                                loadingElement.innerHTML = '<p style="color: #f59e0b;">Loading is taking longer than expected...</p>';
-                            }
-                        }, 5000);
-                    }
-                }
-                
-                // Stop observing once loaded
-                videoObserver.unobserve(video);
-            }
-        });
-    }, {
-        threshold: 0.3, // Load when 30% visible (more conservative)
-        rootMargin: '50px' // Start loading 50px before entering viewport
-    });
-    
-    // Observe both videos
-    const baselineVideo = document.getElementById('baseline-video');
-    const cnavVideo = document.getElementById('cnav-video');
-    
-    if (baselineVideo) videoObserver.observe(baselineVideo);
-    if (cnavVideo) videoObserver.observe(cnavVideo);
-}
-
-// Synchronized video comparison playback
+// Simple video setup without complex lazy loading
 function setupVideoComparison() {
     const baselineVideo = document.getElementById('baseline-video');
     const cnavVideo = document.getElementById('cnav-video');
     
     if (!baselineVideo || !cnavVideo) return;
     
-    // Wait for videos to be loaded before setting up sync
-    const setupSync = () => {
-        // Sync play/pause
-        baselineVideo.addEventListener('play', function() {
-            if (cnavVideo.readyState >= 2) cnavVideo.play();
-        });
-        
-        baselineVideo.addEventListener('pause', function() {
-            cnavVideo.pause();
-        });
-        
-        cnavVideo.addEventListener('play', function() {
-            if (baselineVideo.readyState >= 2) baselineVideo.play();
-        });
-        
-        cnavVideo.addEventListener('pause', function() {
-            baselineVideo.pause();
-        });
-        
-        // Sync seeking
-        baselineVideo.addEventListener('seeked', function() {
-            if (Math.abs(cnavVideo.currentTime - baselineVideo.currentTime) > 0.1) {
-                cnavVideo.currentTime = baselineVideo.currentTime;
-            }
-        });
-        
-        cnavVideo.addEventListener('seeked', function() {
-            if (Math.abs(baselineVideo.currentTime - cnavVideo.currentTime) > 0.1) {
-                baselineVideo.currentTime = cnavVideo.currentTime;
-            }
-        });
-        
-        console.log('Video comparison sync enabled');
-    };
-    
-    // Setup sync when both videos are ready
-    let baselineReady = false;
-    let cnavReady = false;
-    
-    baselineVideo.addEventListener('loadeddata', function() {
-        baselineReady = true;
-        if (cnavReady) setupSync();
+    // Sync play/pause
+    baselineVideo.addEventListener('play', function() {
+        cnavVideo.play();
     });
     
-    cnavVideo.addEventListener('loadeddata', function() {
-        cnavReady = true;
-        if (baselineReady) setupSync();
+    baselineVideo.addEventListener('pause', function() {
+        cnavVideo.pause();
     });
+    
+    cnavVideo.addEventListener('play', function() {
+        baselineVideo.play();
+    });
+    
+    cnavVideo.addEventListener('pause', function() {
+        baselineVideo.pause();
+    });
+    
+    // Sync seeking
+    baselineVideo.addEventListener('seeked', function() {
+        if (Math.abs(cnavVideo.currentTime - baselineVideo.currentTime) > 0.1) {
+            cnavVideo.currentTime = baselineVideo.currentTime;
+        }
+    });
+    
+    cnavVideo.addEventListener('seeked', function() {
+        if (Math.abs(baselineVideo.currentTime - cnavVideo.currentTime) > 0.1) {
+            baselineVideo.currentTime = cnavVideo.currentTime;
+        }
+    });
+    
+    console.log('Video comparison sync enabled');
 }
+
 
 $(document).ready(function() {
     // Check for click events on the navbar burger icon
@@ -284,9 +192,6 @@ $(document).ready(function() {
     
     // Setup video autoplay for carousel
     setupVideoCarouselAutoplay();
-    
-    // Setup lazy loading for comparison videos
-    setupVideoLazyLoading();
     
     // Setup video comparison sync
     setupVideoComparison();

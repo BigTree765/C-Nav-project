@@ -382,16 +382,10 @@
         <div class="column is-half">
           <div class="video-comparison-item">
             <h3 class="title is-4 has-text-centered">Baseline Model</h3>
-            <div class="video-container">
-              <div class="video-loading" id="baseline-loading">
-                <div class="loading-spinner"></div>
-                <p>Loading video...</p>
-              </div>
-              <video poster="" id="baseline-video" controls muted loop height="100%" preload="none" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none;" data-src="static/videos/baseline_toilet_hm3d_4o12.mp4">
-                <source src="" type="video/mp4">
-                <p>Your browser does not support the video tag. <a href="static/videos/baseline_toilet_hm3d_4o12.mp4" download>Download video</a></p>
-              </video>
-            </div>
+            <video poster="" id="baseline-video" controls muted loop height="100%" preload="metadata" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <source src="static/videos/baseline_toilet_hm3d_4o12.mp4" type="video/mp4">
+              <p>Your browser does not support the video tag. <a href="static/videos/baseline_toilet_hm3d_4o12.mp4" download>Download video</a></p>
+            </video>
             <p class="has-text-centered" style="margin-top: 1rem; color: #64748b;">
               Baseline model showing catastrophic forgetting and navigation failures
             </p>
@@ -402,16 +396,10 @@
         <div class="column is-half">
           <div class="video-comparison-item">
             <h3 class="title is-4 has-text-centered" style="color: #2563eb;">C-Nav Model</h3>
-            <div class="video-container">
-              <div class="video-loading" id="cnav-loading">
-                <div class="loading-spinner"></div>
-                <p>Loading video...</p>
-              </div>
-              <video poster="" id="cnav-video" controls muted loop height="100%" preload="none" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none;" data-src="static/videos/cnav_toilet_hm3d_4o12.mp4">
-                <source src="" type="video/mp4">
-                <p>Your browser does not support the video tag. <a href="static/videos/cnav_toilet_hm3d_4o12.mp4" download>Download video</a></p>
-              </video>
-            </div>
+            <video poster="" id="cnav-video" controls muted loop height="100%" preload="metadata" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <source src="static/videos/cnav_toilet_hm3d_4o12.mp4" type="video/mp4">
+              <p>Your browser does not support the video tag. <a href="static/videos/cnav_toilet_hm3d_4o12.mp4" download>Download video</a></p>
+            </video>
             <p class="has-text-centered" style="margin-top: 1rem; color: #64748b;">
               C-Nav model with continual learning and successful navigation
             </p>
