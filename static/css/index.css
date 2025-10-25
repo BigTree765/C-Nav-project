@@ -23,8 +23,8 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* 自定义最大宽度设置 */
-  --max-width-desktop: 1200px;  /* 默认是1152px，可以调整 */
-  --max-width-widescreen: 1400px;  /* 默认是1344px，可以调整 */
+  --max-width-desktop: 1000px;  /* 调整为更窄的宽度 */
+  --max-width-widescreen: 1200px;  /* 调整为更窄的宽度 */
 }
 
 /* Smooth scrolling for better UX */
@@ -49,6 +49,12 @@ body {
 
 .container.is-max-widescreen {
   max-width: var(--max-width-widescreen) !important;
+}
+
+/* 更窄的容器宽度 */
+.container.is-narrow {
+  max-width: 900px !important;
+  margin: 0 auto;
 }
 
 /* 全宽容器选项 */
