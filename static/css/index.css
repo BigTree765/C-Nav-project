@@ -331,7 +331,7 @@ body {
   box-shadow: var(--shadow-md);
   transition: var(--transition);
   border: 1px solid var(--border-color);
-  max-width: 600px;  /* 限制轮播项目最大宽度 */
+  max-width: 750px;  /* 增加轮播项目最大宽度 */
   margin-left: auto;
   margin-right: auto;
 }
@@ -347,15 +347,16 @@ body {
   border-radius: var(--border-radius);
   width: 100%;
   height: auto;
-  max-height: 400px;  /* 限制图片最大高度 */
+  max-height: 500px;  /* 增加图片最大高度 */
   object-fit: contain;  /* 保持图片比例 */
 }
 
 .results-carousel .subtitle {
-  font-size: 1rem !important;
+  font-size: 1.1rem !important;  /* 增加字体大小 */
   color: var(--text-secondary);
   margin-top: 1rem;
   font-weight: 500;
+  line-height: 1.5;  /* 增加行高 */
 }
 
 /* Pagination and Misc Improvements */
